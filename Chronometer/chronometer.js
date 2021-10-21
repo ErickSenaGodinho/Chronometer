@@ -14,7 +14,7 @@ let milElement = document.querySelector("span.mil")
 startButton.onclick = () => start()
 
 function start() {
-    stopr()
+    stop()
     cron = setInterval(() => {
         timer()
     }, 10);
