@@ -1,29 +1,31 @@
 let min = 0
 let seg = 0
 let mil = 0
-let cron
 
 let startButton = document.querySelector("button.start")
 let stopButton = document.querySelector("button.stop")
 let restartButton = document.querySelector("button.restart")
 
-let minElement = document.querySelector("span.min")    
+let minElement = document.querySelector("span.min")
 let segElement = document.querySelector("span.seg")
 let milElement = document.querySelector("span.mil")
+
+let worker = new Worker('worker.js')
 
 startButton.onclick = () => start()
 
 function start() {
     stop()
-    cron = setInterval(() => {
+    worker.postMessage('start')
+    worker.onmessage = (e) => {
         timer()
-    }, 10);
+    }
 }
 
 stopButton.onclick = () => stop()
 
 function stop() {
-    clearInterval(cron)
+    worker.postMessage('stop')
 }
 
 restartButton.onclick = () => restart()
@@ -42,29 +44,29 @@ function restart() {
 function timer() {
     mil++
 
-    if(mil <= 9){
+    if (mil <= 9) {
         milElement.innerHTML = `0${mil}`
-    }else if(mil < 99){
+    } else if (mil < 99) {
         milElement.innerHTML = mil
-    }else{
+    } else {
         mil = 0
         milElement.innerHTML = `0${mil}`
         seg++
     }
 
-    if(seg <= 9){
+    if (seg <= 9) {
         segElement.innerHTML = `0${seg}`
-    }else if(seg < 60){
+    } else if (seg < 60) {
         segElement.innerHTML = seg
-    }else{
+    } else {
         seg = 0
         segElement.innerHTML = `0${seg}`
         min++
     }
 
-    if(min <= 9){
+    if (min <= 9) {
         minElement.innerHTML = `0${min}`
-    }else{
+    } else {
         minElement.innerHTML = min
     }
 }
