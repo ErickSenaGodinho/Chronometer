@@ -36,7 +36,7 @@ main {
 .buttons {
     width: 100%;
     display: inline-flex;
-    justify-content: center;
+    justify-content: space-around;
 }
 
 button {
@@ -49,7 +49,7 @@ button {
     color: white;
     cursor: pointer;
     width: 25%;
-    margin: 20px 20px 0 0;
+    margin-top: 20px;
 }
 
 button:hover {
@@ -62,4 +62,19 @@ button:hover {
 
 button:focus {
     outline: none;
+}
+
+/*Responsive*/
+
+@media screen and (max-width: 940px) {
+    .title{
+        text-align: center;
+    }
+    .buttons{
+        flex-direction: column;
+        align-items: center;
+    }
+    button{
+        width: 75%;
+    }
 }
