@@ -7,7 +7,6 @@ onmessage = (e) => {
             }, 10);
             break;
         case 'stop':
-            console.log(interval)
             clearInterval(interval)
             break;
     }

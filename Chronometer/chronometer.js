@@ -1,14 +1,31 @@
-let min = 0
-let seg = 0
-let mil = 0
+let hour = {
+    value: 00,
+    maxValue: null,
+    hasLimit: false,
+    element: document.querySelector("span.hour")
+}
+let min = {
+    value: 00,
+    maxValue: 60,
+    hasLimit: true,
+    element: document.querySelector("span.min")
+}
+let seg = {
+    value: 0,
+    maxValue: 60,
+    hasLimit: true,
+    element: document.querySelector("span.seg")
+}
+let mil = {
+    value: 0,
+    maxValue: 100,
+    hasLimit: true,
+    element: document.querySelector("span.mil")
+}
 
 let startButton = document.querySelector("button.start")
 let stopButton = document.querySelector("button.stop")
 let restartButton = document.querySelector("button.restart")
-
-let minElement = document.querySelector("span.min")
-let segElement = document.querySelector("span.seg")
-let milElement = document.querySelector("span.mil")
 
 let worker = new Worker('worker.js')
 
@@ -32,41 +49,36 @@ restartButton.onclick = () => restart()
 
 function restart() {
     stop()
-    min = 0
-    seg = 0
-    mil = 0
 
-    minElement.innerHTML = "00"
-    segElement.innerHTML = "00"
-    milElement.innerHTML = "00"
+    hour.value = 0
+    hour.element.innerHTML = "00"
+
+    min.value = 0
+    min.element.innerHTML = "00"
+
+    seg.value = 0
+    seg.element.innerHTML = "00"
+
+    mil.value = 0
+    mil.element.innerHTML = "00"
 }
 
 function timer() {
-    mil++
+    mil.value++
+    mil.element.innerHTML = updateTime(mil, seg);
+    seg.element.innerHTML = updateTime(seg, min);
+    min.element.innerHTML = updateTime(min, hour);
+    hour.element.innerHTML = updateTime(hour, null);
+}
 
-    if (mil <= 9) {
-        milElement.innerHTML = `0${mil}`
-    } else if (mil < 99) {
-        milElement.innerHTML = mil
+function updateTime(unit, nextUnit) {
+    if (unit.value <= 9) {
+        return `0${unit.value}`
+    } else if (unit.value < unit.maxValue || !unit.hasLimit) {
+        return unit.value;
     } else {
-        mil = 0
-        milElement.innerHTML = `0${mil}`
-        seg++
-    }
-
-    if (seg <= 9) {
-        segElement.innerHTML = `0${seg}`
-    } else if (seg < 60) {
-        segElement.innerHTML = seg
-    } else {
-        seg = 0
-        segElement.innerHTML = `0${seg}`
-        min++
-    }
-
-    if (min <= 9) {
-        minElement.innerHTML = `0${min}`
-    } else {
-        minElement.innerHTML = min
+        unit.value = 0;
+        nextUnit.value++;
+        return "00";
     }
 }
