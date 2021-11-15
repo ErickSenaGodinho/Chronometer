@@ -39,6 +39,31 @@ main {
     justify-content: space-around;
 }
 
+.buttons.stopped > .start-button{
+    width: 50%;
+    transform: translateX(40%);
+    z-index: 1;
+}
+
+.buttons.stopped > .restart-button{
+    opacity: 0;
+    transform: translateX(-100%);
+}
+
+.buttons.stopped > .start-button,
+.buttons.stopped > .restart-button,
+.buttons.running > .start-button,
+.buttons.running > .restart-button
+{
+    -webkit-transition: transform 0.5s, width 0.5s, opacity 0.5s;
+    -moz-transition: transform 0.5s, width 0.5s, opacity 0.5s;
+    transition: transform 0.5s, width 0.5s, opacity 0.5s;
+}
+
+.buttons.running > .start-button{
+    width: 25%;
+}
+
 button {
     padding: 15px;
     border-radius: 5px;
@@ -50,14 +75,17 @@ button {
     cursor: pointer;
     width: 25%;
     margin-top: 20px;
+    -webkit-transition: background 0.5s ease-in-out, color 0.5s ease-in-out;
+    -moz-transition: background 0.5s ease-in-out, color 0.5s ease-in-out;
+    transition: background 0.5s ease-in-out, color 0.5s ease-in-out;
 }
 
 button:hover {
     background-color: white;
     color: #ffa600;
-    -webkit-transition: all 0.5s ease-in-out;
-    -moz-transition: all 0.5s ease-in-out;
-    transition: all 0.5s ease-in-out;
+    -webkit-transition-duration: 0.2s;
+    -moz-transition-duration: 0.2s;
+    transition-duration: 0.2s;
 }
 
 button:focus {

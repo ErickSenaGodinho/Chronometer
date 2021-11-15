@@ -23,15 +23,23 @@ let mil = {
     element: document.querySelector("span.mil")
 }
 
-let startButton = document.querySelector("button.start")
-let stopButton = document.querySelector("button.stop")
-let restartButton = document.querySelector("button.restart")
+const states = {
+    STOPPED: "stopped",
+    RUNNING: "running",
+}
+
+let currentState = states.STOPPED
+
+let buttons = document.querySelector(".buttons")
+let principalButton = document.querySelector(".start-button")
+let restartButton = document.querySelector(".restart-button")
 
 let worker = new Worker('worker.js')
 
-startButton.onclick = () => start()
+principalButton.onclick = () => start()
 
 function start() {
+    changeButtonState()
     stop()
     worker.postMessage('start')
     worker.onmessage = (e) => {
@@ -39,7 +47,13 @@ function start() {
     }
 }
 
-stopButton.onclick = () => stop()
+function changeButtonState() {
+    let newState = currentState === states.STOPPED ? states.RUNNING : states.STOPPED
+    buttons.classList.replace(currentState, newState)
+    currentState = newState
+}
+
+//stopButton.onclick = () => stop()
 
 function stop() {
     worker.postMessage('stop')
@@ -48,6 +62,7 @@ function stop() {
 restartButton.onclick = () => restart()
 
 function restart() {
+    changeButtonState()
     stop()
 
     hour.value = 0
