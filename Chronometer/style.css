@@ -39,7 +39,7 @@ main {
     justify-content: space-around;
 }
 
-.buttons.stopped > .start-button{
+.buttons.stopped > .principal-button.restarted{
     width: 50%;
     transform: translateX(40%);
     z-index: 1;
@@ -50,18 +50,14 @@ main {
     transform: translateX(-100%);
 }
 
-.buttons.stopped > .start-button,
+.buttons.stopped > .principal-button,
 .buttons.stopped > .restart-button,
-.buttons.running > .start-button,
+.buttons.running > .principal-button,
 .buttons.running > .restart-button
 {
     -webkit-transition: transform 0.5s, width 0.5s, opacity 0.5s;
     -moz-transition: transform 0.5s, width 0.5s, opacity 0.5s;
     transition: transform 0.5s, width 0.5s, opacity 0.5s;
-}
-
-.buttons.running > .start-button{
-    width: 25%;
 }
 
 button {
@@ -73,7 +69,7 @@ button {
     font-size: 14pt;
     color: white;
     cursor: pointer;
-    width: 25%;
+    width: 33%;
     margin-top: 20px;
     -webkit-transition: background 0.5s ease-in-out, color 0.5s ease-in-out;
     -moz-transition: background 0.5s ease-in-out, color 0.5s ease-in-out;
@@ -104,5 +100,15 @@ button:focus {
     }
     button{
         width: 75%;
+    }
+    .buttons.stopped > .principal-button.restarted{
+        width: 75%;
+        transform: translateX(0%);
+        z-index: 1;
+    }
+    .buttons.stopped > .restart-button{
+        opacity: 0;
+        transform: translateX(0%);
+        transform: translateY(-135%);
     }
 }

@@ -1,27 +1,23 @@
-let hour = {
-    value: 00,
-    maxValue: null,
-    hasLimit: false,
+let hour = new Unit({
     element: document.querySelector("span.hour")
-}
-let min = {
-    value: 00,
+});
+let min = new Unit({
     maxValue: 60,
     hasLimit: true,
     element: document.querySelector("span.min")
-}
-let seg = {
-    value: 0,
+});
+let seg = new Unit({
     maxValue: 60,
     hasLimit: true,
     element: document.querySelector("span.seg")
-}
-let mil = {
-    value: 0,
-    maxValue: 100,
+});
+let mil = new Unit({
+    maxValue: 60,
     hasLimit: true,
     element: document.querySelector("span.mil")
-}
+});
+
+const units = [hour, min, seg, mil]
 
 const states = {
     STOPPED: "stopped",
@@ -30,16 +26,47 @@ const states = {
 
 let currentState = states.STOPPED
 
+const principalButtonStates = {
+    STARTED: "started",
+    STOPPED: "stopped",
+    RESTARTED: "restarted"
+}
+
+let currentPrincipalButtonState = principalButtonStates.RESTARTED
+
 let buttons = document.querySelector(".buttons")
-let principalButton = document.querySelector(".start-button")
+let principalButton = document.querySelector(".principal-button")
 let restartButton = document.querySelector(".restart-button")
 
 let worker = new Worker('worker.js')
 
-principalButton.onclick = () => start()
+onload = () => {
+    restartButton.disabled = true
+}
+
+principalButton.onclick = () => checkPrincipalButton()
+
+function checkPrincipalButton() {
+    if (principalButton.classList.contains(principalButtonStates.RESTARTED) || principalButton.classList.contains(principalButtonStates.STARTED)) {
+        if (principalButton.classList.contains(principalButtonStates.RESTARTED)) {
+            changeButtonState()
+        }
+        updatePrincipalButtonState(principalButtonStates.STOPPED, "STOP")
+        start()
+    } else {
+        updatePrincipalButtonState(principalButtonStates.STARTED, "START")
+        stop()
+    }
+    restartButton.disabled = false
+}
+
+function updatePrincipalButtonState(newPrincipalButtonState, text) {
+    principalButton.classList.replace(currentPrincipalButtonState, newPrincipalButtonState)
+    currentPrincipalButtonState = newPrincipalButtonState
+    principalButton.innerText = text
+}
 
 function start() {
-    changeButtonState()
     stop()
     worker.postMessage('start')
     worker.onmessage = (e) => {
@@ -53,8 +80,6 @@ function changeButtonState() {
     currentState = newState
 }
 
-//stopButton.onclick = () => stop()
-
 function stop() {
     worker.postMessage('stop')
 }
@@ -62,20 +87,15 @@ function stop() {
 restartButton.onclick = () => restart()
 
 function restart() {
+    updatePrincipalButtonState(principalButtonStates.RESTARTED, "START")
+    restartButton.disabled = true
+
     changeButtonState()
     stop()
 
-    hour.value = 0
-    hour.element.innerHTML = "00"
-
-    min.value = 0
-    min.element.innerHTML = "00"
-
-    seg.value = 0
-    seg.element.innerHTML = "00"
-
-    mil.value = 0
-    mil.element.innerHTML = "00"
+    units.forEach(element => {
+        element.restartValues()
+    });
 }
 
 function timer() {
