@@ -7,7 +7,7 @@ class Unit {
     }
 
     restartValues() {
-        this.value = 0
-        this.element.innerHTML = "00"
+        this.value = 0;
+        this.element.innerHTML = "00";
     }
 }

@@ -1,105 +1,114 @@
 let hour = new Unit({
-    element: document.querySelector("span.hour")
+    element: document.querySelector("span.hour"),
 });
 let min = new Unit({
     maxValue: 60,
     hasLimit: true,
-    element: document.querySelector("span.min")
+    element: document.querySelector("span.min"),
 });
 let seg = new Unit({
     maxValue: 60,
     hasLimit: true,
-    element: document.querySelector("span.seg")
+    element: document.querySelector("span.seg"),
 });
 let mil = new Unit({
     maxValue: 60,
     hasLimit: true,
-    element: document.querySelector("span.mil")
+    element: document.querySelector("span.mil"),
 });
 
-const units = [hour, min, seg, mil]
+const units = [hour, min, seg, mil];
 
 const states = {
     STOPPED: "stopped",
     RUNNING: "running",
-}
+};
 
-let currentState = states.STOPPED
+let currentState = states.STOPPED;
 
 const principalButtonStates = {
     STARTED: "started",
     STOPPED: "stopped",
-    RESTARTED: "restarted"
-}
+    RESTARTED: "restarted",
+};
 
-let currentPrincipalButtonState = principalButtonStates.RESTARTED
+let currentPrincipalButtonState = principalButtonStates.RESTARTED;
 
-let buttons = document.querySelector(".buttons")
-let principalButton = document.querySelector(".principal-button")
-let restartButton = document.querySelector(".restart-button")
+let buttons = document.querySelector(".buttons");
+let principalButton = document.querySelector(".principal-button");
+let restartButton = document.querySelector(".restart-button");
 
-let worker = new Worker('worker.js')
+let worker = new Worker("worker.js");
 
 onload = () => {
-    restartButton.disabled = true
-}
+    restartButton.disabled = true;
+};
 
-principalButton.onclick = () => checkPrincipalButton()
+principalButton.onclick = () => checkPrincipalButton();
 
 function checkPrincipalButton() {
-    if (principalButton.classList.contains(principalButtonStates.RESTARTED) || principalButton.classList.contains(principalButtonStates.STARTED)) {
-        if (principalButton.classList.contains(principalButtonStates.RESTARTED)) {
-            changeButtonState()
+    if (
+        principalButton.classList.contains(principalButtonStates.RESTARTED) ||
+        principalButton.classList.contains(principalButtonStates.STARTED)
+    ) {
+        if (
+            principalButton.classList.contains(principalButtonStates.RESTARTED)
+        ) {
+            changeButtonState();
         }
-        updatePrincipalButtonState(principalButtonStates.STOPPED, "STOP")
-        start()
+        updatePrincipalButtonState(principalButtonStates.STOPPED, "STOP");
+        start();
     } else {
-        updatePrincipalButtonState(principalButtonStates.STARTED, "START")
-        stop()
+        updatePrincipalButtonState(principalButtonStates.STARTED, "START");
+        stop();
     }
-    restartButton.disabled = false
+    restartButton.disabled = false;
 }
 
 function updatePrincipalButtonState(newPrincipalButtonState, text) {
-    principalButton.classList.replace(currentPrincipalButtonState, newPrincipalButtonState)
-    currentPrincipalButtonState = newPrincipalButtonState
-    principalButton.innerText = text
+    principalButton.classList.replace(
+        currentPrincipalButtonState,
+        newPrincipalButtonState
+    );
+    currentPrincipalButtonState = newPrincipalButtonState;
+    principalButton.innerText = text;
 }
 
 function start() {
-    stop()
-    worker.postMessage('start')
+    stop();
+    worker.postMessage("start");
     worker.onmessage = (e) => {
-        timer()
-    }
+        timer();
+    };
 }
 
 function changeButtonState() {
-    let newState = currentState === states.STOPPED ? states.RUNNING : states.STOPPED
-    buttons.classList.replace(currentState, newState)
-    currentState = newState
+    let newState =
+        currentState === states.STOPPED ? states.RUNNING : states.STOPPED;
+    buttons.classList.replace(currentState, newState);
+    currentState = newState;
 }
 
 function stop() {
-    worker.postMessage('stop')
+    worker.postMessage("stop");
 }
 
-restartButton.onclick = () => restart()
+restartButton.onclick = () => restart();
 
 function restart() {
-    updatePrincipalButtonState(principalButtonStates.RESTARTED, "START")
-    restartButton.disabled = true
+    updatePrincipalButtonState(principalButtonStates.RESTARTED, "START");
+    restartButton.disabled = true;
 
-    changeButtonState()
-    stop()
+    changeButtonState();
+    stop();
 
-    units.forEach(element => {
-        element.restartValues()
+    units.forEach((element) => {
+        element.restartValues();
     });
 }
 
 function timer() {
-    mil.value++
+    mil.value++;
     mil.element.innerHTML = updateTime(mil, seg);
     seg.element.innerHTML = updateTime(seg, min);
     min.element.innerHTML = updateTime(min, hour);
@@ -108,7 +117,7 @@ function timer() {
 
 function updateTime(unit, nextUnit) {
     if (unit.value <= 9) {
-        return `0${unit.value}`
+        return `0${unit.value}`;
     } else if (unit.value < unit.maxValue || !unit.hasLimit) {
         return unit.value;
     } else {

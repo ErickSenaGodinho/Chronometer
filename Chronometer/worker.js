@@ -1,13 +1,13 @@
-var interval
+var interval;
 onmessage = (e) => {
     switch (e.data) {
-        case 'start':
+        case "start":
             interval = setInterval(() => {
-                postMessage('')
+                postMessage("");
             }, 10);
             break;
-        case 'stop':
-            clearInterval(interval)
+        case "stop":
+            clearInterval(interval);
             break;
     }
-}
+};
